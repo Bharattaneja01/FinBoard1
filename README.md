@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📊 Customizable Finance Dashboard
 
-## Getting Started
+A customizable finance dashboard that allows users to build their own real-time monitoring system using multiple financial APIs. Users can create widgets such as cards, tables, and charts, configure data fields dynamically, and visualize market data for stocks and cryptocurrencies.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🔗 Live Deployment
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Frontend deployed on Vercel:  
+👉 **https://fin-board1.vercel.app/**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<kbd>
+<img src="https://github.com/Bharattaneja01/FinBoard1/blob/228192e1edd9d1e5c483fe53289c9df4824fa822/screenshots/dashboard.png" />
+</kbd>
+<br />
+<br />
+<kbd>
+<img src="https://github.com/Bharattaneja01/FinBoard1/blob/228192e1edd9d1e5c483fe53289c9df4824fa822/screenshots/edit-widget.png" />
+</kbd>
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## ✨ Features & Design
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🧩 Widget Management
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Add, update, refresh, and delete widgets
+- Supported widget types:
+  - 📌 Finance Cards (single or multiple metrics)
+  - 📋 Tables (market data, lists)
+  - 📈 Charts (line-based price history)
+- Drag-and-drop widget rearrangement
+- Widget configuration panel with live updates
+- Last updated timestamp & manual refresh support
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 🔌 API Integration
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The dashboard integrates with multiple financial data providers:
+
+- **CoinGecko** – crypto prices, markets, charts
+- **Alpha Vantage** – stock quotes and time-series data
+- **Finnhub** – stock market data
+- **IndianAPI** – Indian market data
+
+All external API calls are routed through a secure server-side API layer to protect API keys and handle rate limits gracefully.
+
+---
+
+### 🔄 Handling Different API Data Formats (Key Challenge)
+
+Each API returns data in **different formats**, including:
+- Deeply nested objects
+- Arrays and time-series data
+- Keys with spaces and numeric prefixes (e.g., `05. price`)
+- Provider-specific response schemas
+
+To address this, the project implements:
+- **Key normalization** (spaces, dots, numeric prefixes removed)
+- **Structural normalization** to unify objects, arrays, and time-series data
+- A common data model for:
+  - Field selection
+  - Cards, tables, and charts rendering
+
+While API response formats vary significantly, the application handles these variations **to the fullest practical extent**, ensuring consistent and predictable widget behavior across providers.
+
+---
+
+### 🎨 User Interface & Experience
+
+- Fully responsive dashboard layout
+- Interactive JSON field explorer
+- Search and collapse functionality for large API responses
+- Per-field data formatting options:
+  - Number
+  - Currency
+  - Percentage
+- Graceful loading, error, and empty-state handling
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- **Next.js** (App Router)
+- **Tailwind CSS** for styling
+- **Zustand** for state management
+- **Recharts** for data visualization
+
+### Backend
+- Server-side API routes (Next.js)
+- Secure environment variable handling
+- API request caching & error handling
+
+### Deployment
+- **Vercel**
+
+---
+
+## 🧪 Sample APIs (For Testing)
+
+### 🟢 CoinGecko – Single Crypto Price Card
+```text
+https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true
