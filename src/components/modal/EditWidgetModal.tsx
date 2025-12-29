@@ -78,62 +78,74 @@ export default function EditWidgetModal() {
     closeConfig()
   }
 
-
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
-      <div className="bg-slate-900 w-full max-w-xl p-6 rounded-xl border border-white/10 overflow-y-auto max-h-[90vh]">
-        <div className="flex justify-between mb-4">
-          <h2 className="text-lg font-semibold">Edit Widget</h2>
-          <button onClick={closeConfig}>
-            <X />
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 sm:p-6">
+      <div className="bg-white dark:bg-slate-900 w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-xl border border-black/10 dark:border-white/10 p-4 sm:p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base sm:text-lg font-semibold">
+            Edit Widget
+          </h2>
+          <button
+            onClick={closeConfig}
+            className="p-1 rounded hover:bg-black/5 dark:hover:bg-white/10"
+          >
+            <X size={20} />
           </button>
         </div>
 
         <input
-          className="w-full mb-2 p-2 rounded bg-black/30"
+          className="w-full mb-2 p-2 rounded bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 text-sm sm:text-base"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
 
         <textarea
-          className="w-full mb-2 p-2 rounded bg-black/30"
+          className="w-full mb-2 p-2 rounded bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 text-sm sm:text-base resize-none"
+          rows={3}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
 
         <input
-          className="w-full mb-2 p-2 rounded bg-black/30"
+          className="w-full mb-2 p-2 rounded bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 text-sm sm:text-base"
           value={apiUrl}
           onChange={(e) => setApiUrl(e.target.value)}
         />
 
         <input
           type="number"
-          className="w-full mb-2 p-2 rounded bg-black/30"
+          className="w-full mb-2 p-2 rounded bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 text-sm sm:text-base"
           value={refreshInterval}
           onChange={(e) => setRefreshInterval(Number(e.target.value))}
         />
 
         <button
           onClick={testApi}
-          className="bg-emerald-600 px-3 py-2 rounded text-sm mb-3"
+          className="w-full sm:w-auto bg-emerald-600 px-3 py-2 rounded text-sm sm:text-base text-white mb-3"
         >
           Re-test API
         </button>
 
         {apiData && (
-          <JsonExplorer
-            data={apiData}
-            selected={selectedPaths}
-            onToggle={toggleField}
-          />
+          <div className="max-h-[40vh] overflow-auto rounded border border-black/10 dark:border-white/10 mb-3">
+            <JsonExplorer
+              data={apiData}
+              selected={selectedPaths}
+              onToggle={toggleField}
+            />
+          </div>
         )}
 
         {selectedPaths.map((path) => (
-          <div key={path} className="flex items-center gap-2 mt-2 text-sm">
-            <span className="flex-1 truncate">{path}</span>
+          <div
+            key={path}
+            className="flex items-center gap-2 mt-2 text-sm"
+          >
+            <span className="flex-1 truncate text-black dark:text-white">
+              {path}
+            </span>
             <select
-              className="bg-black/30 p-1 rounded"
+              className="bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 p-1 rounded text-sm"
               value={formats[path] || 'number'}
               onChange={(e) =>
                 setFormats((prev) => ({
@@ -151,7 +163,7 @@ export default function EditWidgetModal() {
 
         <button
           onClick={saveChanges}
-          className="mt-4 w-full bg-emerald-700 py-2 rounded"
+          className="mt-4 w-full bg-emerald-700 py-2 rounded text-sm sm:text-base text-white"
         >
           Save Changes
         </button>

@@ -25,32 +25,29 @@ export default function WidgetCard({ widget }: { widget: Widget }) {
   )
 
   async function fetchData(manual = false) {
-  try {
-    if (manual) setLoading(true)
-    setError(null)
+    try {
+      if (manual) setLoading(true)
+      setError(null)
 
-    const raw = await fetchFinanceData(
-      widget.apiUrl,
-      widget.config.provider
-    )
+      const raw = await fetchFinanceData(
+        widget.apiUrl,
+        widget.config.provider
+      )
 
-    // 🔥 Normalize keys
-    const normalizedRaw = normalizeObject(raw)
+      const normalizedRaw = normalizeObject(raw)
+      const normalized = normalizeApiResponse(normalizedRaw)
 
-    // 🔥 Normalize structure
-    const normalized = normalizeApiResponse(normalizedRaw)
+      setData(normalized)
 
-    setData(normalized)
-
-    const now = Date.now()
-    setLastUpdated(now)
-    updateWidget(widget.id, { lastUpdated: now })
-  } catch {
-    setError('Failed to fetch data')
-  } finally {
-    setLoading(false)
+      const now = Date.now()
+      setLastUpdated(now)
+      updateWidget(widget.id, { lastUpdated: now })
+    } catch {
+      setError('Failed to fetch data')
+    } finally {
+      setLoading(false)
+    }
   }
-}
 
   useEffect(() => {
     fetchData()
@@ -62,54 +59,51 @@ export default function WidgetCard({ widget }: { widget: Widget }) {
   }, [widget.apiUrl, widget.refreshInterval])
 
   return (
-    <div className="rounded-xl bg-slate-800 p-4 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition">
-      {/* ───────── HEADER (ALWAYS VISIBLE) ───────── */}
-      <div className="flex justify-between items-center mb-3">
-        <div>
-          <h3 className="font-medium">{widget.name}</h3>
+    <div className="rounded-xl bg-white dark:bg-slate-800 border border-black/10 dark:border-white/10 p-3 sm:p-4 shadow transition flex flex-col">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+        <div className="min-w-0">
+          <h3 className="font-medium text-sm sm:text-base truncate">
+            {widget.name}
+          </h3>
           {widget.description && (
-            <p className="text-xs text-white/40">
+            <p className="text-xs text-black/60 dark:text-white/60 line-clamp-2">
               {widget.description}
             </p>
           )}
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 self-end sm:self-auto">
           <button
-            title="Refresh"
             onClick={() => fetchData(true)}
-            className="hover:text-emerald-400"
+            className="p-1 text-black/60 dark:text-white/60 hover:text-emerald-500"
           >
             <RefreshCcw size={14} />
           </button>
 
           <button
-            title="Update widget"
             onClick={() => openConfig(widget)}
-            className="hover:text-blue-400"
+            className="p-1 text-black/60 dark:text-white/60 hover:text-blue-500"
           >
             <Settings size={14} />
           </button>
 
           <button
-            title="Delete widget"
             onClick={() => removeWidget(widget.id)}
-            className="hover:text-red-400"
+            className="p-1 text-black/60 dark:text-white/60 hover:text-red-500"
           >
             <X size={14} />
           </button>
         </div>
       </div>
 
-      {/* ───────── BODY (STATE-BASED) ───────── */}
       {loading && (
-        <div className="text-sm text-white/50">
+        <div className="flex items-center justify-center flex-1 text-sm text-black/50 dark:text-white/50">
           Loading data…
         </div>
       )}
 
       {!loading && error && (
-        <div className="text-sm text-red-400">
+        <div className="flex items-center justify-center flex-1 text-sm text-red-500">
           {error}
         </div>
       )}
@@ -135,13 +129,11 @@ export default function WidgetCard({ widget }: { widget: Widget }) {
         />
       )}
 
-      <div className="text-xs text-white/40 mt-3 flex justify-between">
-        <span>
-          Last updated:{' '}
-          {lastUpdated
-            ? new Date(lastUpdated).toLocaleTimeString()
-            : '—'}
-        </span>
+      <div className="text-xs text-black/50 dark:text-white/40 mt-3">
+        Last updated:{' '}
+        {lastUpdated
+          ? new Date(lastUpdated).toLocaleTimeString()
+          : '—'}
       </div>
     </div>
   )

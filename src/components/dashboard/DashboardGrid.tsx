@@ -60,7 +60,17 @@ export default function DashboardGrid({ widgets }: Props) {
         items={widgets.map((w) => w.id)}
         strategy={rectSortingStrategy}
       >
-        <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          className="
+            p-3 sm:p-4 md:p-6
+            grid
+            grid-cols-1
+            sm:grid-cols-2
+            xl:grid-cols-3
+            2xl:grid-cols-4
+            gap-3 sm:gap-4 md:gap-6
+          "
+        >
           {widgets.map((widget) => (
             <SortableWidget key={widget.id} widget={widget} />
           ))}

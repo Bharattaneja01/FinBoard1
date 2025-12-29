@@ -7,7 +7,6 @@ import { useDashboardStore } from '@/store/dashboardStore'
 import { fetchFinanceData } from '@/lib/apiClient'
 import { detectProviderFromUrl } from '@/lib/detectProvider'
 import { normalizeObject } from '@/lib/normalizeObject'
-import { normalizeApiResponse } from '@/lib/normalizeApiResponse'
 import JsonExplorer from '@/components/widget/JsonExplorer'
 import { DataFormat, WidgetType } from '@/types/widget'
 
@@ -49,17 +48,13 @@ export default function AddWidgetModal() {
     try {
       const provider = detectProviderFromUrl(apiUrl)
       const raw = await fetchFinanceData(apiUrl, provider)
-      
-
       const normalizedRaw = normalizeObject(raw)
-
       setApiData(normalizedRaw)
       setSelected([])
       setFormats({})
     } catch (e: any) {
       setError(e.message || 'Failed to fetch API')
     }
-    
   }
 
   function createWidget() {
@@ -91,31 +86,35 @@ export default function AddWidgetModal() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center">
-      <div className="bg-slate-900 w-full max-w-2xl p-6 rounded-xl shadow-2xl border border-white/10">
-        <div className="flex justify-between mb-4">
-          <h2 className="text-lg font-semibold">Add Widget</h2>
-          <button onClick={closeAddWidget}>
-            <X />
+    <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4 sm:p-6">
+      <div className="bg-white dark:bg-slate-900 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl border border-black/10 dark:border-white/10 p-4 sm:p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base sm:text-lg font-semibold">Add Widget</h2>
+          <button
+            onClick={closeAddWidget}
+            className="p-1 hover:bg-black/5 dark:hover:bg-white/10 rounded"
+          >
+            <X size={20} />
           </button>
         </div>
 
         <input
-          className="w-full p-2 mb-2 bg-black/30 rounded"
+          className="w-full p-2 mb-2 bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 rounded text-sm sm:text-base"
           placeholder="Widget name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
 
         <textarea
-          className="w-full p-2 mb-3 bg-black/30 rounded"
+          className="w-full p-2 mb-3 bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 rounded text-sm sm:text-base resize-none"
+          rows={3}
           placeholder="Widget description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
 
         <select
-          className="w-full p-2 mb-3 bg-black/30 rounded"
+          className="w-full p-2 mb-3 bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 rounded text-sm sm:text-base"
           value={type}
           onChange={(e) => setType(e.target.value as WidgetType)}
         >
@@ -125,7 +124,7 @@ export default function AddWidgetModal() {
         </select>
 
         <input
-          className="w-full p-2 mb-2 bg-black/30 rounded"
+          className="w-full p-2 mb-2 bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 rounded text-sm sm:text-base"
           placeholder="Paste API URL"
           value={apiUrl}
           onChange={(e) => setApiUrl(e.target.value)}
@@ -133,62 +132,64 @@ export default function AddWidgetModal() {
 
         <button
           onClick={testApi}
-          className="bg-emerald-600 px-4 py-2 rounded mb-3"
+          className="w-full sm:w-auto bg-emerald-600 px-4 py-2 rounded mb-3 text-sm sm:text-base text-white"
         >
           Test API
         </button>
 
         {error && (
-          <p className="text-red-400 text-sm mb-2">
+          <p className="text-red-500 text-sm mb-2">
             {error}
           </p>
         )}
-        
+
         {apiData && (
           <>
-            <div className="flex items-center mb-2 gap-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center mb-2 gap-2">
               <input
-                className="flex-1 p-2 bg-black/30 rounded"
+                className="flex-1 p-2 bg-black/5 dark:bg-black/30 border border-black/10 dark:border-white/10 rounded text-sm sm:text-base"
                 placeholder="Search fields"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
               <button
                 onClick={() => setCollapsed(!collapsed)}
-                className="flex items-center gap-1 text-sm"
+                className="flex items-center justify-center gap-1 text-sm px-2 py-2 bg-black/5 dark:bg-white/5 rounded"
               >
-                {collapsed ? <ChevronDown /> : <ChevronUp />}
+                {collapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
                 {collapsed ? 'Expand' : 'Collapse'}
               </button>
             </div>
 
             {!collapsed && (
-              <JsonExplorer
-                data={apiData}
-                search={search}
-                selected={selected}
-                formats={formats}
-                onToggle={(path) =>
-                  setSelected((prev) =>
-                    prev.includes(path)
-                      ? prev.filter((p) => p !== path)
-                      : [...prev, path]
-                  )
-                }
-                onFormatChange={(path, format) =>
-                  setFormats((prev) => ({
-                    ...prev,
-                    [path]: format,
-                  }))
-                }
-              />
+              <div className="max-h-[40vh] overflow-auto rounded border border-black/10 dark:border-white/10">
+                <JsonExplorer
+                  data={apiData}
+                  search={search}
+                  selected={selected}
+                  formats={formats}
+                  onToggle={(path) =>
+                    setSelected((prev) =>
+                      prev.includes(path)
+                        ? prev.filter((p) => p !== path)
+                        : [...prev, path]
+                    )
+                  }
+                  onFormatChange={(path, format) =>
+                    setFormats((prev) => ({
+                      ...prev,
+                      [path]: format,
+                    }))
+                  }
+                />
+              </div>
             )}
           </>
         )}
 
         <button
           onClick={createWidget}
-          className="mt-4 w-full bg-emerald-700 py-2 rounded"
+          className="mt-4 w-full bg-emerald-700 py-2 rounded text-sm sm:text-base text-white"
         >
           Add Widget
         </button>
